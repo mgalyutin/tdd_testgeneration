@@ -19,9 +19,6 @@
  */
 package ruleengine;
 
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * @author Dimitry Polivaev 18.02.2013
  */
@@ -36,48 +33,38 @@ public class RuleEngine {
 	public boolean hasRuleForProperty(String propertyName) {
 		return rules.hasRuleForProperty(propertyName);
 	}
-	
+
 	// while (combination.hasNext()) {
-	//    while(combilnation.nextRule().nextValue()) {
-	//          generate
-	//    }
+	// while(combilnation.nextRule().nextValue()) {
+	// generate
+	// }
 
 	public void run(ScriptProducer scriptProducer) {
-		List<Rule> ruleValues = rules.values();
-		if (!ruleValues.isEmpty()) {
-			Rule rule0 = ruleValues.get(0);
-			ValueIterator value0Iterator = rule0.iterator();
-			addPropertyToState(rule0, value0Iterator);
-			
-			if(ruleValues.size() == 2){
-				Rule rule1 = ruleValues.get(1);
-				ValueIterator value1Iterator = rule1.iterator();
-				addPropertyToState(rule1, value1Iterator);
-			}
-			
-			scriptProducer.makeScriptFor(this);
-			if(value0Iterator.hasNext()){
-				state.nextIteration();
-				addPropertyToState(rule0, value0Iterator);
-				if(ruleValues.size() == 2){
-					Rule rule1 = ruleValues.get(1);
-					ValueIterator value1Iterator = rule1.iterator();
-					addPropertyToState(rule1, value1Iterator);
+		// List<Rule> ruleValues = rules.values();
+
+		// Set[] -- all iterations for the current combination root can be
+		// determined
+		CombinationIterator combinations = new ParallelIterator(rules.values());
+
+		if (combinations.hasCombinations()) {
+
+			for (PropertyCombinations propertySet : combinations.getPropertyCombinations()) {
+				for (PropertyAssignment c : propertySet.getPropertyAssignments()) {
+					state.addProperty(c.getTargetedPropertyName(), c.getValue());
 				}
 				scriptProducer.makeScriptFor(this);
 			}
-		}
-		else {
+
+		} else {
 			scriptProducer.makeScriptFor(this);
 		}
 	}
 
 	private void addPropertyToState(Rule rule, ValueIterator valueIterator) {
-		{
 			Object value = valueIterator.next();
 			state.addProperty(rule.getTargetedPropertyName(), value);
-		}
 	}
+
 
 	public String getAssignedPropertiesAsString() {
 		return state.getAssignedPropertiesAsString();

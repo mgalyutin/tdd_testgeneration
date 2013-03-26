@@ -62,8 +62,12 @@ public class ConstantValuesRule implements Rule {
 				public Object next() {
 					return valueIterator.next();
 				}
-				
-			};
+
+                @Override
+                public int getSize() {
+                    return values.length;
+                }
+            };
 		}
 		return iterator;
 	}
