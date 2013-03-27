@@ -11,7 +11,7 @@ import java.util.Iterator;
  */
 public class FixedLengthIterable<T> implements Iterable<T> {
 
-    private IteratorProducer<T> iteratorProducer;
+    private final IteratorProducer<T> iteratorProducer;
 
     private int totalIterations = 0;
 

@@ -23,8 +23,8 @@ package ruleengine;
  * @author Dimitry Polivaev 18.02.2013
  */
 public class RuleEngine {
-	private Rules rules = new Rules();
-	private State state = new State();
+	private final Rules rules = new Rules();
+	private final State state = new State();
 
 	public void addRule(Rule rule) {
 		rules.addRule(rule);
@@ -53,16 +53,13 @@ public class RuleEngine {
 					state.addProperty(c.getTargetedPropertyName(), c.getValue());
 				}
 				scriptProducer.makeScriptFor(this);
+                state.nextIteration();
 			}
 
 		} else {
 			scriptProducer.makeScriptFor(this);
+            state.nextIteration();
 		}
-	}
-
-	private void addPropertyToState(Rule rule, ValueIterator valueIterator) {
-			Object value = valueIterator.next();
-			state.addProperty(rule.getTargetedPropertyName(), value);
 	}
 
 

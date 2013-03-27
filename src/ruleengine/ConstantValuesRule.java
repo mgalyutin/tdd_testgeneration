@@ -24,52 +24,31 @@ import java.util.Iterator;
 
 /**
  * @author Dimitry Polivaev
- * 18.02.2013
+ *         18.02.2013
  */
 public class ConstantValuesRule implements Rule {
-	
-	private final String targetedPropertyName;
-	private final Object[] values;
-	private ValueIterator iterator;
-	
-	public ConstantValuesRule(String targetedPropertyName, Object... values) {
-    	this.targetedPropertyName = targetedPropertyName;
-		this.values = values;
-	}
 
-	/* (non-Javadoc)
-	 * @see ruleengine.Rule#getTargetedPropertyName()
-	 */
-	@Override
-	public String getTargetedPropertyName() {
-		return targetedPropertyName;
-	}
+    private final String targetedPropertyName;
+    private final Object[] values;
 
-	private Iterable<Object> values() {
-		return Arrays.asList(values);
-	}
+    public ConstantValuesRule(String targetedPropertyName, Object... values) {
+        this.targetedPropertyName = targetedPropertyName;
+        this.values = values;
+    }
 
-	@Override
-	public ValueIterator iterator() {
-		if(iterator == null){
-			iterator = new ValueIterator() {
-				final private Iterator<Object> valueIterator = values().iterator();
+    @Override
+    public String getTargetedPropertyName() {
+        return targetedPropertyName;
+    }
 
-				public boolean hasNext() {
-					return valueIterator.hasNext();
-				}
 
-				public Object next() {
-					return valueIterator.next();
-				}
+    @Override
+    public Iterator<Object> valuesIterator() {
+        return Arrays.asList(values).iterator();
+    }
 
-                @Override
-                public int getSize() {
-                    return values.length;
-                }
-            };
-		}
-		return iterator;
-	}
-	
+    @Override
+    public int getValuesCount() {
+        return values.length;
+    }
 }

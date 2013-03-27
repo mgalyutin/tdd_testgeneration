@@ -1,7 +1,7 @@
 package ruleengine;
 
 class State {
-	private StringBuilder assignedPropertiesAsString = new StringBuilder(); 
+	private final StringBuilder assignedPropertiesAsString = new StringBuilder();
 	private int count = 1;	
 	
 	

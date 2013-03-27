@@ -11,7 +11,7 @@ import java.util.Iterator;
  */
 public class ProxyIterable<T> implements Iterable<T> {
 
-    private IteratorProducer<T> iteratorProducer;
+    private final IteratorProducer<T> iteratorProducer;
 
 
     public ProxyIterable(IteratorProducer<T> iteratorProducer) {
@@ -22,7 +22,7 @@ public class ProxyIterable<T> implements Iterable<T> {
     public Iterator<T> iterator() {
         return new Iterator<T>() {
 
-            Iterator<T> currentIterator = iteratorProducer.createIterator();
+            final Iterator<T> currentIterator = iteratorProducer.createIterator();
 
             @Override
             public boolean hasNext() {

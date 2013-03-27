@@ -25,7 +25,7 @@ package ruleengine;
  */
 public class LoggingScriptProducerMock implements ScriptProducer {
 	
-	private StringBuilder log = new StringBuilder();
+	private final StringBuilder log = new StringBuilder();
 
 	@Override
     public void makeScriptFor(RuleEngine ruleEngine) {

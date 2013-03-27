@@ -1,7 +1,5 @@
 package ruleengine;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.Iterator;
 
 /*
@@ -12,7 +10,7 @@ import java.util.Iterator;
 public class CyclicIterable<T> implements Iterable<T> {
 
 
-    private IteratorProducer<T> iteratorProducer;
+    private final IteratorProducer<T> iteratorProducer;
 
     public CyclicIterable(IteratorProducer<T> iteratorProducer) {
         this.iteratorProducer = iteratorProducer;
@@ -20,11 +18,9 @@ public class CyclicIterable<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
+        return new IteratorAdaptor<T>() {
 
             Iterator<T> currentIterator = iteratorProducer.createIterator();
-
-            int count = 0;
 
             @Override
             public boolean hasNext() {
@@ -36,17 +32,10 @@ public class CyclicIterable<T> implements Iterable<T> {
                 if (!currentIterator.hasNext()) {
                     currentIterator = iteratorProducer.createIterator();
                 }
-                T r =  currentIterator.next();
 
-                count++;
-
-                return r;
+                return currentIterator.next();
             }
 
-            @Override
-            public void remove() {
-                throw new NotImplementedException();
-            }
         };
     }
 }

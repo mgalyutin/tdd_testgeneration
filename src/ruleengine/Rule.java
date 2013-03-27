@@ -1,15 +1,13 @@
 package ruleengine;
 
+import java.util.Iterator;
 
-// triggered A <- default B
-// default B <- default A
-// => triggered A can not be assigned!
-
-// triggered A -> default B
-
-public interface Rule {
+public interface Rule  {
 
 	String getTargetedPropertyName();
-	ValueIterator iterator();
-	
+
+    Iterator<Object> valuesIterator();
+
+    public int getValuesCount();
+
 }
