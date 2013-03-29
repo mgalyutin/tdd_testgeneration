@@ -17,26 +17,6 @@ public class ParallelIterator implements CombinationIterator {
         return getPropertyCombinationsSize() > 0;
     }
 
-    private int getPropertyCombinationsSize() {
-        int result = 0;
-
-        if (this.parallelRules != null) {
-            for (Rule r : this.parallelRules) {
-                int i = r.getValuesCount();
-
-                if (i == 0) {
-                    return 0;
-                } else {
-                    if (result < i) {
-                        result = i;
-                    }
-                }
-
-            }
-        }
-        return result;
-    }
-
     @Override
     public Iterable<PropertyCombinations> getPropertyCombinations() {
         return new FixedLengthIterable<PropertyCombinations>(
@@ -47,23 +27,6 @@ public class ParallelIterator implements CombinationIterator {
     private class PropertyCombinationsIteratorProducer implements IteratorProducer<PropertyCombinations> {
 
         final HashMap<Rule, Iterator<Object>> cyclicIterableMap = new HashMap<Rule, Iterator<Object>>();
-
-        private Object getNextValueFor(Rule rule) {
-            Iterator<Object> valuesIterator = cyclicIterableMap.get(rule);
-
-            if (valuesIterator == null) {
-                valuesIterator = createCyclicValuesIterable(rule);
-
-                cyclicIterableMap.put(rule, valuesIterator);
-            }
-
-            return valuesIterator.next();
-        }
-
-        private Iterator<Object> createCyclicValuesIterable(final Rule rule) {
-            return new CyclicIterable<Object>(new PropertyValuesIteratorProducer(rule)).iterator();
-        }
-
 
         @Override
         public Iterator<PropertyCombinations> createIterator() {
@@ -82,9 +45,26 @@ public class ParallelIterator implements CombinationIterator {
             };
         }
 
+        private Iterator<Object> createCyclicValuesIterable(final Rule rule) {
+            return new CyclicIterable<Object>(new PropertyValuesIteratorProducer(rule)).iterator();
+        }
+
+        private Object getNextValueFor(Rule rule) {
+            Iterator<Object> valuesIterator = cyclicIterableMap.get(rule);
+
+            if (valuesIterator == null) {
+                valuesIterator = createCyclicValuesIterable(rule);
+
+                cyclicIterableMap.put(rule, valuesIterator);
+            }
+
+            return valuesIterator.next();
+        }
+
     }
 
     private class PropertyAssignmentIteratorProducer implements IteratorProducer<PropertyAssignment> {
+
         private final PropertyCombinationsIteratorProducer propertyCombinationsIteratorProducer;
 
         public PropertyAssignmentIteratorProducer(PropertyCombinationsIteratorProducer propertyCombinationsIteratorProducer) {
@@ -111,6 +91,7 @@ public class ParallelIterator implements CombinationIterator {
 
             };
         }
+
     }
 
     private class PropertyValuesIteratorProducer implements IteratorProducer<Object> {
@@ -139,5 +120,27 @@ public class ParallelIterator implements CombinationIterator {
 
             };
         }
+    }
+
+    private int getPropertyCombinationsSize() {
+
+        int result = 0;
+
+        if (this.parallelRules != null) {
+            for (Rule r : this.parallelRules) {
+                int i = r.getValuesCount();
+
+                if (i == 0) {
+                    return 0;
+                } else {
+                    if (result < i) {
+                        result = i;
+                    }
+                }
+
+            }
+        }
+
+        return result;
     }
 }
